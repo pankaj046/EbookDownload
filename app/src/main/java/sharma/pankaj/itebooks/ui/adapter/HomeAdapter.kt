@@ -32,7 +32,7 @@ class HomeAdapter(private val context: Context, private val list: List<HomeViewM
         return list.size
     }
 
-    class CustomViewHolder(val bookBinding: BookBinding) :
+    class CustomViewHolder(private val bookBinding: BookBinding) :
         RecyclerView.ViewHolder(bookBinding.root) {
 
         fun bind(homeViewModel: HomeViewModel){

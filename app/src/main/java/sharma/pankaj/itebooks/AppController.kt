@@ -13,8 +13,8 @@ import sharma.pankaj.itebooks.data.network.WebServices
 import sharma.pankaj.itebooks.data.repository.HomeRepository
 import sharma.pankaj.itebooks.ui.HomeViewModelFactory
 
-class AppController : Application(), KodeinAware {
 
+class AppController : Application(), KodeinAware {
 
     override val kodein: Kodein
         get() = Kodein.lazy {

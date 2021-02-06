@@ -4,46 +4,101 @@
     xmlns:tools="http://schemas.android.com/tools">
 
     <data>
+
         <variable
             name="viewmodel"
             type="sharma.pankaj.itebooks.viewmodel.HomeViewModel" />
     </data>
 
-    <RelativeLayout
+    <androidx.drawerlayout.widget.DrawerLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:orientation="vertical"
-        tools:context=".ui.HomeActivity">
+        android:fitsSystemWindows="true"
+        tools:openDrawer="start">
 
-        <EditText
-            android:id="@+id/search"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_margin="16dp"
-            android:background="@drawable/edit_field_bg"
-            android:drawablePadding="10dp"
-            android:hint="@string/search"
-            android:inputType="textEmailAddress"
-            android:paddingStart="10dp"
-            android:paddingEnd="10dp"
-            android:text="@={viewmodel.searchKey}"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:layout_marginBottom="10dp"/>
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/bookList"
-            android:layout_below="@+id/search"
+        <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_marginStart="4dp"
-            android:layout_marginEnd="4dp" />
-        <ProgressBar
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:id="@+id/progress_bar"
+            android:orientation="vertical"
+            tools:context=".ui.HomeActivity">
+
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_margin="8dp"
+                android:elevation="2dp"
+                android:background="@drawable/edit_field_bg"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+                    <EditText
+                        android:id="@+id/search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_marginEnd="16dp"
+                        android:layout_alignParentStart="true"
+                        android:layout_toStartOf="@+id/submit"
+                        android:background="@color/white"
+                        android:drawablePadding="10dp"
+                        android:hint="@string/search"
+                        android:maxLines="1"
+                        android:inputType="textAutoComplete"
+                        android:paddingStart="10dp"
+                        android:paddingEnd="10dp"
+                        android:scaleType="centerCrop"
+                        android:text="@={viewmodel.searchKey}"
+                        app:layout_collapseMode="pin" />
+                    <ImageButton
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:id="@+id/submit"
+                        android:background="@android:color/transparent"
+                        android:src="@drawable/ic_search_24"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="8dp"
+                        android:onClick="@{viewmodel::onSearchClick}"/>
+                </RelativeLayout>
+
+            </com.google.android.material.appbar.MaterialToolbar>
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bookList"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:layout_marginBottom="8dp"
+                android:clipToPadding="false"
+                android:paddingBottom="71dp"
+                android:scrollbars="none"
+                app:scrollTo="@{viewmodel.scrollTo}"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+        <com.google.android.material.navigation.NavigationView
+            android:id="@+id/nav_view"
             android:layout_width="wrap_content"
-            android:layout_centerInParent="true"
-            android:layout_height="wrap_content"/>
-    </RelativeLayout>
+            android:layout_height="match_parent"
+            android:layout_gravity="start"
+            android:visibility="gone"
+            android:fitsSystemWindows="true">
+
+            <ExpandableListView
+                android:id="@+id/menu"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent" />
+        </com.google.android.material.navigation.NavigationView>
+
+    </androidx.drawerlayout.widget.DrawerLayout>
+
+
 </layout>
 
