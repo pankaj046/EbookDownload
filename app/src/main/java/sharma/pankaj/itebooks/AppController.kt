@@ -14,7 +14,6 @@ import sharma.pankaj.itebooks.data.repository.HomeRepository
 import sharma.pankaj.itebooks.ui.HomeViewModelFactory
 import sharma.pankaj.itebooks.util.CustomLoading
 
-
 class AppController : Application(), KodeinAware {
 
     override val kodein: Kodein
@@ -28,6 +27,4 @@ class AppController : Application(), KodeinAware {
             bind() from singleton { HomeRepository(instance()) }
             bind() from provider { HomeViewModelFactory(instance()) }
         }
-
-
 }

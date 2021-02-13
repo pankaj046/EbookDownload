@@ -6,6 +6,6 @@ import sharma.pankaj.itebooks.data.db.entities.Data
 data class BookListResponse (
     @SerializedName("error") val error : Boolean,
     @SerializedName("message") val message : String,
-    @SerializedName("list") val list : List<Data>
+    @SerializedName("list") val list : MutableList<Data>
 
 )

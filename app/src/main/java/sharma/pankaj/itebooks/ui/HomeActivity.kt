@@ -43,25 +43,25 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
         viewModel.listener = this
-        setSupportActionBar(binding.toolbar)
+       binding.bookList.addOnScrollListener(viewModel.scrollListener)
 
         dialog = progressDialog(this)
         viewModel.onRequest()
         viewModel.sendMenuRequest()
 
         viewModel.menuList.observeForever {
-            if (it.isNotEmpty()){
-               for (list in it){
-                   Log.e(TAG, "onCreate: ${list.title}")
-
-                   if (list.tag!=null && list.tag.size>0){
-                       for (submenu in list.tag){
-                           Log.e(TAG, "onCreate: ${submenu.subTitle}")
-                       }
-                   }
-
-                }
-            }
+//            if (it.isNotEmpty()){
+//               for (list in it){
+//                   Log.e(TAG, "onCreate: ${list.title}")
+//
+//                   if (list.tag!=null && list.tag.size>0){
+//                       for (submenu in list.tag){
+//                           Log.e(TAG, "onCreate: ${submenu.subTitle}")
+//                       }
+//                   }
+//
+//                }
+//            }
         }
 
         viewModel.list.observeForever {
@@ -74,7 +74,7 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
                     binding.refresh.isRefreshing = false
                 }
             } else {
-                Log.e(TAG, "onCreate: NULL $it")
+                Log.e(TAG, "onCreate: NULL ")
             }
         }
 

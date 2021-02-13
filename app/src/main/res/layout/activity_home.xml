@@ -10,106 +10,87 @@
             type="sharma.pankaj.itebooks.viewmodel.HomeViewModel" />
     </data>
 
-    <androidx.drawerlayout.widget.DrawerLayout
+
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:fitsSystemWindows="true"
-        tools:openDrawer="start">
+        android:orientation="vertical"
+        tools:context=".ui.HomeActivity">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
             android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:orientation="vertical"
-            tools:context=".ui.HomeActivity">
+            android:layout_height="55dp"
+            android:layout_margin="8dp"
+            android:background="@drawable/edit_field_bg"
+            android:elevation="2dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.appbar.MaterialToolbar
-                android:id="@+id/toolbar"
+            <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="55dp"
-                android:layout_margin="8dp"
-                android:elevation="2dp"
-                android:background="@drawable/edit_field_bg"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent">
-                    <EditText
-                        android:id="@+id/search"
-                        android:layout_width="wrap_content"
-                        android:layout_height="match_parent"
-                        android:layout_marginEnd="16dp"
-                        android:layout_alignParentStart="true"
-                        android:layout_toStartOf="@+id/submit"
-                        android:background="@color/white"
-                        android:drawablePadding="10dp"
-                        android:hint="@string/search"
-                        android:maxLines="1"
-                        android:inputType="textAutoComplete"
-                        android:paddingEnd="10dp"
-                        android:paddingStart="0dp"
-                        android:scaleType="centerCrop"
-                        android:text="@={viewmodel.searchKey}"
-                        app:layout_collapseMode="pin" />
-                    <ImageButton
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
-                        android:id="@+id/submit"
-                        android:background="@android:color/transparent"
-                        android:src="@drawable/ic_search_24"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerInParent="true"
-                        android:layout_marginEnd="8dp"
-                        android:onClick="@{viewmodel::onSearchClick}"
-                        android:contentDescription="@string/app_name" />
-                </RelativeLayout>
+                android:layout_height="match_parent">
 
-            </com.google.android.material.appbar.MaterialToolbar>
-            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                <EditText
+                    android:id="@+id/search"
+                    android:layout_width="wrap_content"
+                    android:layout_height="match_parent"
+                    android:layout_alignParentStart="true"
+                    android:layout_marginEnd="16dp"
+                    android:layout_toStartOf="@+id/submit"
+                    android:background="@color/white"
+                    android:drawablePadding="10dp"
+                    android:hint="@string/search"
+                    android:inputType="textAutoComplete"
+                    android:maxLines="1"
+                    android:paddingStart="0dp"
+                    android:paddingEnd="10dp"
+                    android:scaleType="centerCrop"
+                    android:text="@={viewmodel.searchKey}"
+                    app:layout_collapseMode="pin" />
+
+                <ImageButton
+                    android:id="@+id/submit"
+                    android:layout_width="50dp"
+                    android:layout_height="50dp"
+                    android:layout_alignParentEnd="true"
+                    android:layout_centerInParent="true"
+                    android:layout_marginEnd="8dp"
+                    android:background="@android:color/transparent"
+                    android:contentDescription="@string/app_name"
+                    android:onClick="@{viewmodel::onSearchClick}"
+                    android:src="@drawable/ic_search_24" />
+            </RelativeLayout>
+
+        </com.google.android.material.appbar.MaterialToolbar>
+
+        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+            android:id="@+id/refresh"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="8dp"
+            android:layout_marginBottom="8dp"
+            android:paddingBottom="74dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/bookList"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/refresh"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                android:layout_marginStart="8dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="8dp"
-                android:layout_marginBottom="8dp"
-                android:paddingBottom="74dp">
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/bookList"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
 
-                    android:clipToPadding="false"
+                android:clipToPadding="false"
 
-                    android:scrollbars="none"
-                    app:scrollTo="@{viewmodel.scrollTo}" />
-            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+                android:scrollbars="none"
+                app:scrollTo="@{viewmodel.scrollTo}" />
+        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-
-        <com.google.android.material.navigation.NavigationView
-            android:id="@+id/nav_view"
-            android:layout_width="wrap_content"
-            android:layout_height="match_parent"
-            android:layout_gravity="start"
-            android:visibility="visible"
-            app:headerLayout="@layout/header_layout"
-            android:fitsSystemWindows="true">
-
-            <ExpandableListView
-                android:id="@+id/menu"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent" />
-        </com.google.android.material.navigation.NavigationView>
-
-    </androidx.drawerlayout.widget.DrawerLayout>
-
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
 </layout>
 

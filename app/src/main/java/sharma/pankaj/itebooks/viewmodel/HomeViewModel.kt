@@ -7,12 +7,13 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
+import androidx.recyclerview.widget.GridLayoutManager
+import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
 import sharma.pankaj.itebooks.R
 import sharma.pankaj.itebooks.data.db.entities.Data
 import sharma.pankaj.itebooks.data.network.responses.MenuList
-import sharma.pankaj.itebooks.data.network.responses.MenuResponse
 import sharma.pankaj.itebooks.data.repository.HomeRepository
 import sharma.pankaj.itebooks.listener.HomeRequestListener
 import sharma.pankaj.itebooks.util.Coroutines
@@ -76,7 +77,25 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         } else {
             requestUrl = "search/$searchKey/page/$pageNumber"
             urlChange = true
+            pageNumber = 1
             sendRequest()
+        }
+    }
+
+    val scrollListener = object : RecyclerView.OnScrollListener() {
+        override fun onScrollStateChanged(recyclerView: RecyclerView, newState: Int) {
+            super.onScrollStateChanged(recyclerView, newState)
+            Log.e(TAG, "onScrolled: $newState")
+        }
+
+        override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
+            super.onScrolled(recyclerView, dx, dy)
+            val layoutManager = recyclerView.layoutManager as LinearLayoutManager
+            val firstVisiblePosition = layoutManager.findLastVisibleItemPosition()
+            if (firstVisiblePosition==myList.size-1){
+               pageNumber = pageNumber?.plus(1)
+                sendRequest()
+            }
         }
     }
 
@@ -119,6 +138,6 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         for (i in data) {
             myList.add(HomeViewModel(repository, i.imageUrl, i.title, i.description))
         }
-        list.postValue(myList)
+        list.postValue(myList.distinct())
     }
 }
