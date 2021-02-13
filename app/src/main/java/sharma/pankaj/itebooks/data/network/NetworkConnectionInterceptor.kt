@@ -16,6 +16,7 @@ class NetworkConnectionInterceptor(
 
     override fun intercept(chain: Interceptor.Chain): Response {
         if (!isInternetAvailable())
+
             throw InternetException("Make sure you have an active data connection")
         return chain.proceed(chain.request())
     }

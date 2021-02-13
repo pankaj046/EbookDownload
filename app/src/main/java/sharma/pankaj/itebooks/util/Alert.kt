@@ -16,20 +16,16 @@ fun Context.toast(message: String){
     Toast.makeText(this, message, Toast.LENGTH_LONG ).show()
 }
 
-class CustomDialog {
-    companion object {
-        fun progressDialog(context: Context): Dialog {
-            val dialog = Dialog(context)
-            val inflate = LayoutInflater.from(context).inflate(R.layout.progress_dialog, null)
-            dialog.setContentView(inflate)
-            dialog.window?.setLayout(200, 200);
-            dialog.setCancelable(false)
-            dialog.window!!.setBackgroundDrawable(
-                ColorDrawable(Color.TRANSPARENT)
-            )
-            return dialog
-        }
-    }
+fun View.dialog(context: Context) : Dialog{
+    val dialog = Dialog(context)
+    val inflate = LayoutInflater.from(context).inflate(R.layout.progress_dialog, null)
+    dialog.setContentView(inflate)
+    dialog.window?.setLayout(200, 200);
+    dialog.setCancelable(true)
+    dialog.window!!.setBackgroundDrawable(
+        ColorDrawable(Color.TRANSPARENT)
+    )
+    return dialog
 }
 
 fun View.snackBar(message: String){

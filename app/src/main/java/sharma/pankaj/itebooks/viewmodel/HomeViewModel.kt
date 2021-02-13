@@ -9,7 +9,10 @@ import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.RecyclerView
 import com.squareup.picasso.Picasso
+import sharma.pankaj.itebooks.R
 import sharma.pankaj.itebooks.data.db.entities.Data
+import sharma.pankaj.itebooks.data.network.responses.MenuList
+import sharma.pankaj.itebooks.data.network.responses.MenuResponse
 import sharma.pankaj.itebooks.data.repository.HomeRepository
 import sharma.pankaj.itebooks.listener.HomeRequestListener
 import sharma.pankaj.itebooks.util.Coroutines
@@ -17,37 +20,41 @@ import sharma.pankaj.itebooks.util.Coroutines
 
 class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
-    var requestUrl: String? =null
-    var searchKey: String? =null
+    private var requestUrl: String? = null
+    private var lastUrl: String? = null
+    var urlChange: Boolean? = false
+    var searchKey: String? = null
     var pageNumber: Int? = 1
     val myList: MutableList<HomeViewModel> = mutableListOf()
     var scrollTo = ObservableInt()
-    private val TAG = "HomeViewModel"
-
-    companion object{
-
-        @JvmStatic
-        @BindingAdapter("imageUrl")
-        fun loadImage(imageView: ImageView, imageUrl: String?) {
-            Picasso.get().load(imageUrl).into(imageView);
-        }
-
-        @JvmStatic
-        @BindingAdapter("app:scrollTo")
-        fun scrollTo(recyclerView: RecyclerView, position: Int) {
-            Log.e("TAG", "scrollTo: ", )
-            recyclerView.scrollToPosition(position)
-        }
-    }
-
 
     var listener: HomeRequestListener? = null
-    //val searchKey = MutableLiveData<String>()
 
     var url: String? = null
     var title: String? = null
     var description: String? = null
     var list = MutableLiveData<List<HomeViewModel>>()
+    var menuList = MutableLiveData<List<MenuList>>()
+    private val TAG = "HomeViewModel"
+
+    companion object {
+
+        @JvmStatic
+        @BindingAdapter("imageUrl")
+        fun loadImage(imageView: ImageView, imageUrl: String?) {
+            Picasso.get().load(imageUrl)
+                .error(R.drawable.ic_placeholder_image_24)
+                .tag("loading...")
+                .into(imageView);
+        }
+
+        @JvmStatic
+        @BindingAdapter("app:scrollTo")
+        fun scrollTo(recyclerView: RecyclerView, position: Int) {
+            Log.e("TAG", "scrollTo: ")
+            recyclerView.scrollToPosition(position)
+        }
+    }
 
     constructor(repository: HomeRepository, url: String, title: String, description: String) : this(
         repository
@@ -57,19 +64,20 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         this.description = description
     }
 
-
-    fun onSearchClick(view: View){
-        if (searchKey.isNullOrEmpty()){
-            listener?.onMessage("Please Enter Search key!")
-        }else{
-            requestUrl = "search/$searchKey/page/$pageNumber"
-            sendRequest()
-        }
-    }
-
-    init {
+    fun onRequest() {
         requestUrl = "home/$pageNumber"
         sendRequest()
+    }
+
+
+    fun onSearchClick(view: View) {
+        if (searchKey.isNullOrEmpty()) {
+            listener?.onMessage("Please Enter Search key!")
+        } else {
+            requestUrl = "search/$searchKey/page/$pageNumber"
+            urlChange = true
+            sendRequest()
+        }
     }
 
     private fun sendRequest() {
@@ -80,19 +88,37 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
                 response.list.let {
                     listener?.onHomeResponse(it)
                     getData(response.list)
+                    listener?.onStopRequest()
+                    urlChange = false
                     return@main
                 }
             }
-        }catch (e: Exception){
+        } catch (e: Exception) {
             listener?.onStopRequest()
         }
     }
 
-    private fun getData(data: List<Data>){
+
+    fun sendMenuRequest() {
+        try {
+            Coroutines.main {
+                val response = repository.getMenuData("menu")
+                response.data.let {
+                    menuList.postValue(it)
+                }
+            }
+        } catch (e: Exception) {
+            listener?.onStopRequest()
+        }
+    }
+
+    private fun getData(data: List<Data>) {
+        if (myList.size > 0 && urlChange == true) {
+            myList.clear()
+        }
         for (i in data) {
             myList.add(HomeViewModel(repository, i.imageUrl, i.title, i.description))
         }
         list.postValue(myList)
-        listener?.onStopRequest()
     }
 }

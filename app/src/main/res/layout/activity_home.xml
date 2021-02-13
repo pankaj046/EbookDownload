@@ -47,8 +47,8 @@
                         android:hint="@string/search"
                         android:maxLines="1"
                         android:inputType="textAutoComplete"
-                        android:paddingStart="10dp"
                         android:paddingEnd="10dp"
+                        android:paddingStart="0dp"
                         android:scaleType="centerCrop"
                         android:text="@={viewmodel.searchKey}"
                         app:layout_collapseMode="pin" />
@@ -61,26 +61,35 @@
                         android:layout_alignParentEnd="true"
                         android:layout_centerInParent="true"
                         android:layout_marginEnd="8dp"
-                        android:onClick="@{viewmodel::onSearchClick}"/>
+                        android:onClick="@{viewmodel::onSearchClick}"
+                        android:contentDescription="@string/app_name" />
                 </RelativeLayout>
 
             </com.google.android.material.appbar.MaterialToolbar>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bookList"
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                app:layout_constraintEnd_toEndOf="parent"
+                android:id="@+id/refresh"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/toolbar"
+                app:layout_behavior="@string/appbar_scrolling_view_behavior"
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
                 android:layout_marginBottom="8dp"
-                android:clipToPadding="false"
-                android:paddingBottom="71dp"
-                android:scrollbars="none"
-                app:scrollTo="@{viewmodel.scrollTo}"
-                app:layout_behavior="@string/appbar_scrolling_view_behavior"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@+id/toolbar" />
+                android:paddingBottom="74dp">
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bookList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+
+                    android:clipToPadding="false"
+
+                    android:scrollbars="none"
+                    app:scrollTo="@{viewmodel.scrollTo}" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+
         </androidx.constraintlayout.widget.ConstraintLayout>
 
         <com.google.android.material.navigation.NavigationView
@@ -88,11 +97,13 @@
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
             android:layout_gravity="start"
-            android:visibility="gone"
+            android:visibility="visible"
+            app:headerLayout="@layout/header_layout"
             android:fitsSystemWindows="true">
 
             <ExpandableListView
                 android:id="@+id/menu"
+                android:visibility="gone"
                 android:layout_width="match_parent"
                 android:layout_height="match_parent" />
         </com.google.android.material.navigation.NavigationView>

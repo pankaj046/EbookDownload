@@ -12,6 +12,7 @@ import sharma.pankaj.itebooks.data.network.NetworkConnectionInterceptor
 import sharma.pankaj.itebooks.data.network.WebServices
 import sharma.pankaj.itebooks.data.repository.HomeRepository
 import sharma.pankaj.itebooks.ui.HomeViewModelFactory
+import sharma.pankaj.itebooks.util.CustomLoading
 
 
 class AppController : Application(), KodeinAware {
