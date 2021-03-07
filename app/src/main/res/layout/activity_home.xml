@@ -10,87 +10,115 @@
             type="sharma.pankaj.itebooks.viewmodel.HomeViewModel" />
     </data>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
+    <androidx.coordinatorlayout.widget.CoordinatorLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:orientation="vertical"
+        android:background="#7CF3F3F3"
         tools:context=".ui.HomeActivity">
-
-        <com.google.android.material.appbar.MaterialToolbar
-            android:id="@+id/toolbar"
-            android:layout_width="match_parent"
-            android:layout_height="55dp"
-            android:layout_margin="8dp"
-            android:background="@drawable/edit_field_bg"
-            android:elevation="2dp"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="match_parent">
-
-                <EditText
-                    android:id="@+id/search"
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent"
-                    android:layout_alignParentStart="true"
-                    android:layout_marginEnd="16dp"
-                    android:layout_toStartOf="@+id/submit"
-                    android:background="@color/white"
-                    android:drawablePadding="10dp"
-                    android:hint="@string/search"
-                    android:inputType="textAutoComplete"
-                    android:maxLines="1"
-                    android:paddingStart="0dp"
-                    android:paddingEnd="10dp"
-                    android:scaleType="centerCrop"
-                    android:text="@={viewmodel.searchKey}"
-                    app:layout_collapseMode="pin" />
-
-                <ImageButton
-                    android:id="@+id/submit"
-                    android:layout_width="50dp"
-                    android:layout_height="50dp"
-                    android:layout_alignParentEnd="true"
-                    android:layout_centerInParent="true"
-                    android:layout_marginEnd="8dp"
-                    android:background="@android:color/transparent"
-                    android:contentDescription="@string/app_name"
-                    android:onClick="@{viewmodel::onSearchClick}"
-                    android:src="@drawable/ic_search_24" />
-            </RelativeLayout>
-
-        </com.google.android.material.appbar.MaterialToolbar>
-
-        <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-            android:id="@+id/refresh"
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginStart="8dp"
-            android:layout_marginTop="8dp"
-            android:layout_marginEnd="8dp"
-            android:layout_marginBottom="8dp"
-            android:paddingBottom="74dp"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/toolbar">
+            android:orientation="vertical">
+            <com.google.android.material.appbar.MaterialToolbar
+                android:id="@+id/toolbar"
+                android:layout_width="match_parent"
+                android:layout_height="55dp"
+                android:layout_margin="8dp"
+                android:background="@drawable/edit_field_bg"
+                android:elevation="2dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent">
 
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/bookList"
+                <RelativeLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent">
+
+                    <EditText
+                        android:id="@+id/search"
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent"
+                        android:layout_alignParentStart="true"
+                        android:layout_marginEnd="16dp"
+                        android:layout_toStartOf="@+id/submit"
+                        android:background="@color/white"
+                        android:drawablePadding="10dp"
+                        android:hint="@string/search"
+                        android:inputType="textAutoComplete"
+                        android:maxLines="1"
+                        android:paddingStart="0dp"
+                        android:paddingEnd="10dp"
+                        android:scaleType="centerCrop"
+                        android:text="@={viewmodel.searchKey}"
+                        app:layout_collapseMode="pin"
+                        android:importantForAutofill="no" />
+
+                    <ImageButton
+                        android:id="@+id/submit"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"
+                        android:layout_alignParentEnd="true"
+                        android:layout_centerInParent="true"
+                        android:layout_marginEnd="8dp"
+                        android:background="@android:color/transparent"
+                        android:contentDescription="@string/app_name"
+                        android:onClick="@{viewmodel::onSearchClick}"
+                        android:src="@drawable/ic_search_24" />
+                </RelativeLayout>
+
+            </com.google.android.material.appbar.MaterialToolbar>
+
+            <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+                android:id="@+id/refresh"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="8dp">
 
-                android:clipToPadding="false"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/bookList"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:clipToPadding="false"
+                    app:layout_behavior="@string/appbar_scrolling_view_behavior"
+                    android:scrollbars="none"
+                    tools:listitem="@layout/book_item_layout" />
+            </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                android:scrollbars="none"
-                app:scrollTo="@{viewmodel.scrollTo}" />
-        </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
+        </LinearLayout>
+        <com.google.android.material.floatingactionbutton.FloatingActionButton
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="16dp"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            android:src="@drawable/ic_menu_24"
+            android:onClick="@{viewmodel::onFloatingButtonClickListener}"
+            app:backgroundTint="@color/purple_200"
+            android:contentDescription="@string/app_name"
+            app:layout_anchorGravity="top|end"
+            app:layout_anchor="@+id/bottomSheet"/>
 
-    </androidx.constraintlayout.widget.ConstraintLayout>
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/bottomSheet"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="4dp"
+            android:layout_marginEnd="4dp"
+            android:padding="20dp"
+            android:background="@drawable/upper_rounded_bg"
+            bottomSheetState="@{viewmodel.bottomSheetBehaviorState}"
+            app:layout_behavior="com.google.android.material.bottomsheet.BottomSheetBehavior"
+            app:behavior_hideable="true"
+            app:layout_constraintBottom_toBottomOf="parent">
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                app:singleSelection="true"
+                app:selectionRequired="true"
+                android:id="@+id/chipsGroup"/>
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
 </layout>
 

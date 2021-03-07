@@ -16,7 +16,7 @@ class CustomLoading(){
             val dialog = Dialog(context)
             val inflate = LayoutInflater.from(context).inflate(R.layout.progress_dialog, null)
             dialog.setContentView(inflate)
-            dialog.window?.setLayout(200, 200);
+            dialog.window?.setLayout(250, 250);
             dialog.setCancelable(false)
             dialog.window!!.setBackgroundDrawable(
                 ColorDrawable(Color.TRANSPARENT)

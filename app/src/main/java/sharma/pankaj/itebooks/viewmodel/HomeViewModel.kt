@@ -3,6 +3,7 @@ package sharma.pankaj.itebooks.viewmodel
 import android.util.Log
 import android.view.View
 import android.widget.ImageView
+import androidx.constraintlayout.widget.ConstraintLayout
 import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
@@ -10,6 +11,7 @@ import androidx.lifecycle.ViewModel
 import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.squareup.picasso.Picasso
 import sharma.pankaj.itebooks.R
 import sharma.pankaj.itebooks.data.db.entities.Data
@@ -38,6 +40,9 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     var menuList = MutableLiveData<List<MenuList>>()
     private val TAG = "HomeViewModel"
 
+    val bottomSheetBehaviorState = ObservableInt(BottomSheetBehavior.STATE_HIDDEN)
+    var bottomSheetBehavior: Boolean = false;
+
     companion object {
 
         @JvmStatic
@@ -55,6 +60,14 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
             Log.e("TAG", "scrollTo: ")
             recyclerView.scrollToPosition(position)
         }
+
+        @JvmStatic
+        @BindingAdapter("bottomSheetState")
+        fun bindingBottomSheet(container: ConstraintLayout, state: Int) {
+            val behavior = BottomSheetBehavior.from(container)
+            behavior.state = state
+        }
+
     }
 
     constructor(repository: HomeRepository, url: String, title: String, description: String) : this(
@@ -96,6 +109,21 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
                pageNumber = pageNumber?.plus(1)
                 sendRequest()
             }
+        }
+    }
+
+    private fun onAction(show: Boolean) {
+        bottomSheetBehaviorState.set(if (show) BottomSheetBehavior.STATE_COLLAPSED else BottomSheetBehavior.STATE_HIDDEN)
+    }
+
+    fun onFloatingButtonClickListener(view: View) {
+        Log.e(TAG, "onFloatingButtonClickListener: " )
+        if (bottomSheetBehavior){
+            onAction(false)
+            bottomSheetBehavior = false;
+        }else{
+            onAction(true)
+            bottomSheetBehavior = true;
         }
     }
 
