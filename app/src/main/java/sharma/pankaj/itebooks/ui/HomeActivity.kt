@@ -7,6 +7,7 @@ import android.view.WindowManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.databinding.DataBindingUtil
+import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.google.android.material.chip.Chip
@@ -16,6 +17,7 @@ import org.kodein.di.android.kodein
 import org.kodein.di.generic.instance
 import sharma.pankaj.itebooks.R
 import sharma.pankaj.itebooks.data.db.entities.Data
+import sharma.pankaj.itebooks.data.network.responses.MenuList
 import sharma.pankaj.itebooks.databinding.ActivityHomeBinding
 import sharma.pankaj.itebooks.listener.HomeRequestListener
 import sharma.pankaj.itebooks.ui.adapter.HomeAdapter
@@ -32,6 +34,7 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
     private val TAG = "HomeActivity"
     private var dialog: Dialog? = null
     var pushRefresh: Boolean? = false
+    val menuData = ArrayList<MenuList>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -44,37 +47,41 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
         binding.lifecycleOwner = this
         binding.viewmodel = viewModel
         viewModel.listener = this
-       binding.bookList.addOnScrollListener(viewModel.scrollListener)
+        binding.bookList.addOnScrollListener(viewModel.scrollListener)
 
         dialog = progressDialog(this)
         viewModel.onRequest()
         viewModel.sendMenuRequest()
 
         viewModel.menuList.observeForever {
-            if (it.isNotEmpty()){
-               for (list in it){
-                   addChips(list.title, binding.chipsGroup)
-                   Log.e(TAG, "onCreate: ${list.title}")
-
-                   if (list.tag!=null && list.tag.size>0){
-                       for (submenu in list.tag){
-                           addChips(submenu.subTitle, binding.chipsGroup)
-                           Log.e(TAG, "onCreate: ${submenu.subTitle}")
-                       }
-                   }
-
+            menuData.addAll(it)
+            if (it.isNotEmpty()) {
+                for (data in it) {
+                    addChips(data.title, binding.chipsGroup)
+                    if (data.tag!=null && data.tag.size>0) {
+                        for (submenu in data.tag) {
+                            addChips(submenu.subTitle, binding.chipsGroup)
+                        }
+                    }
                 }
             }
         }
 
         binding.chipsGroup.setOnCheckedChangeListener(ChipGroup.OnCheckedChangeListener { chipGroup, i ->
             val chip: Chip = chipGroup.findViewById(i)
-            if (chip != null) Toast.makeText(
-                applicationContext,
-                "Chip is " + chip.text.toString(),
-                Toast.LENGTH_SHORT
-            ).show()
-            Log.e("OnCheckedChangeListener", "Called")
+            for (data in menuData) {
+                if (chip.chipText.equals(data.title)){
+
+                }
+                if (data.tag != null && data.tag.size > 0) {
+                    for (submenu in data.tag) {
+                        if (chip.chipText.equals(submenu.subTitle)){
+
+                        }
+                    }
+                }
+            }
+
         })
 
         viewModel.list.observeForever {

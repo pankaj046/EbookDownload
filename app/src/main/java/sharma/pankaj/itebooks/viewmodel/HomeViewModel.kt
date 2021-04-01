@@ -26,6 +26,7 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     private var requestUrl: String? = null
     private var lastUrl: String? = null
     var urlChange: Boolean? = false
+    var scrollCheck: Boolean? = true
     var searchKey: String? = null
     var pageNumber: Int? = 1
     val myList: MutableList<HomeViewModel> = mutableListOf()
@@ -88,9 +89,9 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         if (searchKey.isNullOrEmpty()) {
             listener?.onMessage("Please Enter Search key!")
         } else {
+            pageNumber = 1
             requestUrl = "search/$searchKey/page/$pageNumber"
             urlChange = true
-            pageNumber = 1
             sendRequest()
         }
     }
@@ -106,8 +107,12 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
             val firstVisiblePosition = layoutManager.findLastVisibleItemPosition()
             if (firstVisiblePosition==myList.size-1){
-               pageNumber = pageNumber?.plus(1)
-                sendRequest()
+                if (scrollCheck ==  true){
+                    scrollCheck = false
+                    pageNumber = pageNumber?.plus(1)
+                    Log.e(TAG, "onScrolled:  $pageNumber")
+                    onRequest()
+                }
             }
         }
     }
@@ -137,6 +142,7 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
                     getData(response.list)
                     listener?.onStopRequest()
                     urlChange = false
+                    scrollCheck = true;
                     return@main
                 }
             }
