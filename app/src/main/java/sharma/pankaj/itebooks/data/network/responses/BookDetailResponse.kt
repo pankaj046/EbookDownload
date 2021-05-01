@@ -13,7 +13,7 @@ data class Details (
     @SerializedName("imageUrl") val imageUrl : String,
     @SerializedName("bookName") val bookName : String,
     @SerializedName("author") val author : String,
-    @SerializedName("isbnNumber") val isbnNumber : Int,
+    @SerializedName("isbnNumber") val isbnNumber : String,
     @SerializedName("year") val year : Int,
     @SerializedName("pages") val pages : Int,
     @SerializedName("language") val language : String,

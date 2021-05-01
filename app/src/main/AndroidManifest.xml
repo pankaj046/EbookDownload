@@ -19,6 +19,13 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
+
+        <activity android:name=".ui.DetailsActivity">
+            <intent-filter>
+                <action android:name="sharma.pankaj.itebooks.ui.DetailsActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

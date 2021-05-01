@@ -37,6 +37,7 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     var url: String? = null
     var title: String? = null
     var description: String? = null
+    var id: String? = null
     var list = MutableLiveData<List<HomeViewModel>>()
     var menuList = MutableLiveData<List<MenuList>>()
     private val TAG = "HomeViewModel"
@@ -71,12 +72,13 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
     }
 
-    constructor(repository: HomeRepository, url: String, title: String, description: String) : this(
+    constructor(repository: HomeRepository, url: String, title: String, description: String, id: String) : this(
         repository
     ) {
         this.url = url
         this.title = title
         this.description = description
+        this.id = id
     }
 
     fun onRequest() {
@@ -179,7 +181,7 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
             myList.clear()
         }
         for (i in data) {
-            myList.add(HomeViewModel(repository, i.imageUrl, i.title, i.description))
+            myList.add(HomeViewModel(repository, i.imageUrl, i.title, i.description, i.id))
         }
         list.postValue(myList.distinct())
     }

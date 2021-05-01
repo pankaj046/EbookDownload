@@ -1,6 +1,7 @@
 package sharma.pankaj.itebooks.ui
 
 import android.app.Dialog
+import android.content.Intent
 import android.os.Bundle
 import android.util.Log
 import android.view.WindowManager
@@ -20,6 +21,7 @@ import sharma.pankaj.itebooks.data.db.entities.Data
 import sharma.pankaj.itebooks.data.network.responses.MenuList
 import sharma.pankaj.itebooks.databinding.ActivityHomeBinding
 import sharma.pankaj.itebooks.listener.HomeRequestListener
+import sharma.pankaj.itebooks.listener.ItemClickListener
 import sharma.pankaj.itebooks.ui.adapter.HomeAdapter
 import sharma.pankaj.itebooks.util.CustomLoading.Companion.progressDialog
 import sharma.pankaj.itebooks.util.toast
@@ -53,7 +55,13 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
 
         dialog = progressDialog(this)
 
-        homeAdapter = HomeAdapter(this@HomeActivity, myList)
+        homeAdapter = HomeAdapter(this@HomeActivity, myList,object : ItemClickListener{
+            override fun onItemClick(id: String) {
+                val intent = Intent(this@HomeActivity, DetailsActivity::class.java)
+                intent.putExtra("ID", id)
+                startActivity(intent)
+            }
+        })
         binding.bookList.layoutManager = LinearLayoutManager(this)
         binding.bookList.adapter = homeAdapter
 
@@ -144,5 +152,9 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
 
     override fun onHomeResponse(data: List<Data>) {
 
+    }
+
+    override fun onHomeResponse(data: sharma.pankaj.itebooks.data.network.responses.Data) {
+        TODO("Not yet implemented")
     }
 }

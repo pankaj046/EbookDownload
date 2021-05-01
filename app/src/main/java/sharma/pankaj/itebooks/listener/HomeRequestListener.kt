@@ -7,4 +7,5 @@ interface HomeRequestListener {
     fun onStartRequest()
     fun onStopRequest()
     fun onHomeResponse(data: List<Data>)
+    fun onHomeResponse(data: sharma.pankaj.itebooks.data.network.responses.Data)
 }
