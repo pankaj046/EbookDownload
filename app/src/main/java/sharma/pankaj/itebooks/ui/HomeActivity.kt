@@ -36,6 +36,8 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
     var pushRefresh: Boolean? = false
     val menuData = ArrayList<MenuList>()
 
+    val myList: MutableList<HomeViewModel> = mutableListOf()
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         window.setSoftInputMode(WindowManager.LayoutParams.SOFT_INPUT_STATE_HIDDEN);
@@ -50,11 +52,17 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
         binding.bookList.addOnScrollListener(viewModel.scrollListener)
 
         dialog = progressDialog(this)
+
+        homeAdapter = HomeAdapter(this@HomeActivity, myList)
+        binding.bookList.layoutManager = LinearLayoutManager(this)
+        binding.bookList.adapter = homeAdapter
+
         viewModel.onRequest()
         viewModel.sendMenuRequest()
 
         viewModel.menuList.observeForever {
             menuData.addAll(it)
+
             if (it.isNotEmpty()) {
                 for (data in it) {
                     addChips(data.title, binding.chipsGroup)
@@ -67,28 +75,31 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
             }
         }
 
-        binding.chipsGroup.setOnCheckedChangeListener(ChipGroup.OnCheckedChangeListener { chipGroup, i ->
+        binding.chipsGroup.setOnCheckedChangeListener { chipGroup, i ->
+            myList.clear()
             val chip: Chip = chipGroup.findViewById(i)
             for (data in menuData) {
-                if (chip.chipText.equals(data.title)){
-
+                if (chip.chipText.equals(data.title)) {
+                    if (chip.chipText.equals("Home")) {
+                        viewModel.onRequest()
+                    } else {
+                        viewModel.onMenuClick("category/${data.id}/page/")
+                    }
                 }
                 if (data.tag != null && data.tag.size > 0) {
                     for (submenu in data.tag) {
-                        if (chip.chipText.equals(submenu.subTitle)){
-
+                        if (chip.chipText.equals(submenu.subTitle)) {
+                            viewModel.onMenuClick("tag/${submenu.id}/page/")
                         }
                     }
                 }
             }
 
-        })
+        }
 
         viewModel.list.observeForever {
             if (it != null) {
-                homeAdapter = HomeAdapter(this@HomeActivity, it)
-                binding.bookList.layoutManager = LinearLayoutManager(this)
-                binding.bookList.adapter = homeAdapter
+                myList.addAll(it)
                 homeAdapter!!.notifyDataSetChanged()
                 if (binding.refresh.isRefreshing){
                     binding.refresh.isRefreshing = false

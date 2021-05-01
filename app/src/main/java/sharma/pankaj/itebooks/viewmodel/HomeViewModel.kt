@@ -81,9 +81,18 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
     fun onRequest() {
         requestUrl = "home/$pageNumber"
+        onAction(false)
         sendRequest()
     }
 
+    fun onMenuClick(url: String) {
+        myList.clear()
+        pageNumber =  1
+        requestUrl = ""
+        requestUrl = "$url$pageNumber"
+        onAction(false)
+        sendRequest()
+    }
 
     fun onSearchClick(view: View) {
         if (searchKey.isNullOrEmpty()) {
@@ -123,12 +132,12 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
     fun onFloatingButtonClickListener(view: View) {
         Log.e(TAG, "onFloatingButtonClickListener: " )
-        if (bottomSheetBehavior){
+        bottomSheetBehavior = if (bottomSheetBehavior){
             onAction(false)
-            bottomSheetBehavior = false;
+            false;
         }else{
             onAction(true)
-            bottomSheetBehavior = true;
+            true;
         }
     }
 
