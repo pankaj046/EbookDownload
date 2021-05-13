@@ -36,9 +36,9 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
     private val TAG = "HomeActivity"
     private var dialog: Dialog? = null
     var pushRefresh: Boolean? = false
-    val menuData = ArrayList<MenuList>()
+    private val menuData = ArrayList<MenuList>()
 
-    val myList: MutableList<HomeViewModel> = mutableListOf()
+    private val myList: MutableList<HomeViewModel> = mutableListOf()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,7 +52,6 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
         binding.viewmodel = viewModel
         viewModel.listener = this
         binding.bookList.addOnScrollListener(viewModel.scrollListener)
-
         dialog = progressDialog(this)
 
         homeAdapter = HomeAdapter(this@HomeActivity, myList,object : ItemClickListener{
@@ -62,6 +61,7 @@ class HomeActivity : AppCompatActivity(), HomeRequestListener, KodeinAware {
                 startActivity(intent)
             }
         })
+
         binding.bookList.layoutManager = LinearLayoutManager(this)
         binding.bookList.adapter = homeAdapter
 

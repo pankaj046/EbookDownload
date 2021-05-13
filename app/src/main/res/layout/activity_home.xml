@@ -94,9 +94,10 @@
             app:layout_constraintEnd_toEndOf="parent"
             android:src="@drawable/ic_menu_24"
             android:onClick="@{viewmodel::onFloatingButtonClickListener}"
-            app:backgroundTint="@color/purple_200"
+            app:backgroundTint="@color/purple_700"
             android:contentDescription="@string/app_name"
             app:layout_anchorGravity="top|end"
+            app:tint="@android:color/white"
             app:layout_anchor="@+id/bottomSheet"/>
 
         <androidx.constraintlayout.widget.ConstraintLayout

@@ -8,10 +8,10 @@ import androidx.databinding.BindingAdapter
 import androidx.databinding.ObservableInt
 import androidx.lifecycle.MutableLiveData
 import androidx.lifecycle.ViewModel
-import androidx.recyclerview.widget.GridLayoutManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.bottomsheet.BottomSheetBehavior
+import com.google.android.material.floatingactionbutton.FloatingActionButton
 import com.squareup.picasso.Picasso
 import sharma.pankaj.itebooks.R
 import sharma.pankaj.itebooks.data.db.entities.Data
@@ -24,13 +24,13 @@ import sharma.pankaj.itebooks.util.Coroutines
 class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
 
     private var requestUrl: String? = null
-    private var lastUrl: String? = null
+    private var route: String? = null
+
     var urlChange: Boolean? = false
     var scrollCheck: Boolean? = true
     var searchKey: String? = null
     var pageNumber: Int? = 1
-    val myList: MutableList<HomeViewModel> = mutableListOf()
-    var scrollTo = ObservableInt()
+
 
     var listener: HomeRequestListener? = null
 
@@ -82,15 +82,24 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     }
 
     fun onRequest() {
+        route = "home/"
         requestUrl = "home/$pageNumber"
         onAction(false)
         sendRequest()
     }
 
+    fun onRequestOnScroll() {
+        Log.e(TAG, "onRequestOnScroll: $route  $pageNumber")
+        requestUrl = "$route$pageNumber"
+        Log.e(TAG, "onRequestOnScroll: $requestUrl")
+        onAction(false)
+        sendRequest()
+    }
+
     fun onMenuClick(url: String) {
-        myList.clear()
         pageNumber =  1
         requestUrl = ""
+        route = url
         requestUrl = "$url$pageNumber"
         onAction(false)
         sendRequest()
@@ -101,6 +110,7 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
             listener?.onMessage("Please Enter Search key!")
         } else {
             pageNumber = 1
+            route = "search/$searchKey/page/"
             requestUrl = "search/$searchKey/page/$pageNumber"
             urlChange = true
             sendRequest()
@@ -116,13 +126,15 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
             super.onScrolled(recyclerView, dx, dy)
             val layoutManager = recyclerView.layoutManager as LinearLayoutManager
-            val firstVisiblePosition = layoutManager.findLastVisibleItemPosition()
-            if (firstVisiblePosition==myList.size-1){
+            val totalItemCount = layoutManager.itemCount
+            val lastVisible = layoutManager.findLastVisibleItemPosition()
+            val endHasBeenReached = lastVisible + 8 >= totalItemCount
+            if (totalItemCount > 0 && endHasBeenReached) {
                 if (scrollCheck ==  true){
                     scrollCheck = false
                     pageNumber = pageNumber?.plus(1)
-                    Log.e(TAG, "onScrolled:  $pageNumber")
-                    onRequest()
+                    Log.e(TAG, "onScrolled===:  $pageNumber  ==  $requestUrl" )
+                    onRequestOnScroll()
                 }
             }
         }
@@ -133,13 +145,16 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     }
 
     fun onFloatingButtonClickListener(view: View) {
+        val button : FloatingActionButton =  view as FloatingActionButton
         Log.e(TAG, "onFloatingButtonClickListener: " )
         bottomSheetBehavior = if (bottomSheetBehavior){
             onAction(false)
-            false;
+            button.setImageResource(R.drawable.ic_menu_24)
+            false
         }else{
+            button.setImageResource(R.drawable.ic_close_24)
             onAction(true)
-            true;
+            true
         }
     }
 
@@ -148,12 +163,13 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
         try {
             Coroutines.main {
                 val response = repository.getData(requestUrl.toString())
+                Log.e(TAG, "onStartRequest  $requestUrl")
                 response.list.let {
                     listener?.onHomeResponse(it)
                     getData(response.list)
                     listener?.onStopRequest()
                     urlChange = false
-                    scrollCheck = true;
+                    scrollCheck = true
                     return@main
                 }
             }
@@ -177,9 +193,7 @@ class HomeViewModel(private val repository: HomeRepository) : ViewModel() {
     }
 
     private fun getData(data: List<Data>) {
-        if (myList.size > 0 && urlChange == true) {
-            myList.clear()
-        }
+        val myList: MutableList<HomeViewModel> = mutableListOf()
         for (i in data) {
             myList.add(HomeViewModel(repository, i.imageUrl, i.title, i.description, i.id))
         }
